@@ -47,7 +47,7 @@ public class StaticArrayStudentService implements StudentService {
 
         Academic_Performance performance = InputHandler.inputAcademicPerformance(cumulativeGPA);
 
-        staticStudentList[counter] = new Student(autoStudentId, name, dateOfBirth, address, height, weight, studentCode, school, startYear, cumulativeGPA,performance);
+        staticStudentList[counter] = new Student(autoStudentId, name, dateOfBirth, address, height, weight, studentCode, school, startYear, cumulativeGPA, performance);
         System.out.println("Create Student Successfully!");
         System.out.println(staticStudentList[counter++]);
 
@@ -107,32 +107,38 @@ public class StaticArrayStudentService implements StudentService {
         // Kierm tra hàm founde neu khong tim thay thi thong báo
 
 
-         int index =0;
+        int index = 0;
         boolean found = false;
         Integer studentID = InputHandler.deleteID();
-        if( studentID <=0 || studentID > autoStudentId){
+        if (studentID <= 0 || studentID > autoStudentId) {
             System.out.println("Can not found student!");
         }
+        else {
+            for (int i = 0; i < counter; i++) {
+                if (staticStudentList[i].getId() == studentID) {
+                    System.out.println("Delete Student Successfully!");
+                    found = true;
+                    index = i;
+                    break;
+                }
+            }
 
-        for (int i = 0;i < counter ;i++){
-            if(staticStudentList[i].getId() == studentID){
-                System.out.println("Delete Student Successfully!");
-                found = true;
-                index = i;
-                break;
+            for (int i = index; i < counter - 1; i++) {
+                staticStudentList[i] = staticStudentList[i + 1];
+            }
+
+            staticStudentList[counter - 1] = null;
+            counter--;
+
+
+            if (found == false) {
+                System.out.println("Can not found student!");
+                return;
             }
         }
 
-        for (int i = index; i < counter - 1; i++){
-            staticStudentList[i] = staticStudentList[ i + 1];
-        }
 
-        staticStudentList[counter - 1] = null;
-        counter--;
 
-        if(found == false){
-            System.out.println("Can not found student!");
-        }
 
 
     }

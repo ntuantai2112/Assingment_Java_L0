@@ -58,12 +58,55 @@ public class InputHandler {
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
         try {
-            LocalDate birthDay = LocalDate.parse(birthDayStr, formatter);
 
-            if (birthDay.isAfter(LocalDate.now())) {
-                System.out.println(ANSI_RED + "Invalid date of birth!,The day of birth must be male in the past area!" + ANSI_RESET);
+            String[] parts = birthDayStr.split("/");
+            int day = Integer.parseInt(parts[0]);
+            int month = Integer.parseInt(parts[1]);
+            int year = Integer.parseInt(parts[2]);
+
+            if (day <= 0 || day > 31 || month <= 0 || month > 12) {
+                System.out.println(ANSI_RED + "Invalid date of birth!, Please enter a valid date of birth!" + ANSI_RESET);
                 return inputDateOfBirth();
             }
+
+            switch (month) {
+                case 4, 6, 9, 11:
+                    if (day > 30) {
+                        System.out.println(ANSI_RED + "Invalid date of birth!, Please enter a valid date of birth!" + ANSI_RESET);
+                        return inputDateOfBirth();
+                    }
+                    break;
+
+                case 2:
+                    if (checkLeapYear(year)) {
+                        if (day > 29) {
+                            System.out.println(ANSI_RED + "Invalid date of birth!, Please enter a valid date of birth!" + ANSI_RESET);
+                            return inputDateOfBirth();
+                        }
+                    } else {
+                        if (day > 28) {
+                            System.out.println(ANSI_RED + "Invalid date of birth!, Please enter a valid date of birth!" + ANSI_RESET);
+                            return inputDateOfBirth();
+                        }
+                    }
+                    break;
+            }
+
+            LocalDate birthDay = LocalDate.parse(birthDayStr, formatter);
+
+            if (year < 1900) {
+                System.out.println(ANSI_RED + "Invalid date of birth!, Year of birth must be after 1900" + ANSI_RESET);
+                return inputDateOfBirth();
+            }
+
+            if (year >= LocalDate.now().getYear()) {
+                System.out.println(ANSI_RED + "Invalid date of birth!,Year of birth must be less than or equal to the current year!" + ANSI_RESET);
+            }
+
+//            if (birthDay.isAfter(LocalDate.now())) {
+//                System.out.println(ANSI_RED + "Invalid date of birth!,Year of birth must be less than or equal to the current year!" + ANSI_RESET);
+//                return inputDateOfBirth();
+//            }
 
             return birthDay;
         } catch (DateTimeParseException e) {
@@ -347,6 +390,19 @@ public class InputHandler {
         return performance;
     }
 
+
+    private static boolean checkLeapYear(int year) {
+
+        if (year % 4 == 0 && year % 100 != 0) {
+            return true;
+        }
+
+        if (year % 100 == 0 && year % 400 == 0) {
+            return true;
+        }
+
+        return false;
+    }
 
 
 }
